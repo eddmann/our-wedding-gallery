@@ -1,0 +1,70 @@
+plugins:
+  - serverless-dynamodb-local
+  - serverless-s3-local
+  - serverless-offline
+
+custom:
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 8123
+
+  s3:
+    directory: dev/s3
+    cors: dev/s3-cors.xml
+
+  tags:
+    Service: OurWedding
+    Application: Gallery
+    Env: ${self:provider.stage}
+
+  uploadBucketName: 'upload-bucket'
+  photoBucketName: 'photo-bucket'
+  photoBucketPrefix: 'photo'
+  photoBucketPublicReadUrl: 'http://localhost:4569/photo-bucket{path}'
+  photoTableName: 'photo-table'
+  host: 'http://localhost:3000'
+  dynamoDBEndpoint: 'http://localhost:8123'
+  s3Endpoint: 'http://localhost:4569'
+
+resources:
+  Resources:
+    PhotoTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.photoTableName}
+        AttributeDefinitions:
+          - AttributeName: PK
+            AttributeType: S
+          - AttributeName: SK
+            AttributeType: S
+          - AttributeName: GSI1PK
+            AttributeType: S
+          - AttributeName: GSI1SK
+            AttributeType: S
+        KeySchema:
+          - AttributeName: PK
+            KeyType: HASH
+          - AttributeName: SK
+            KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - IndexName: GSI1
+            KeySchema:
+              - AttributeName: GSI1PK
+                KeyType: HASH
+              - AttributeName: GSI1SK
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+        BillingMode: PAY_PER_REQUEST
+
+    UploadBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.uploadBucketName}
+
+    PhotoBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.photoBucketName}

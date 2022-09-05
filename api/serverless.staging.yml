@@ -1,0 +1,17 @@
+iam:
+  role:
+    managedPolicies:
+      - ${ssm:/our-wedding/${self:provider.stage}/apps/gallery/policy-arn}
+
+custom:
+  tags:
+    Service: OurWedding
+    Application: Gallery
+    Env: ${self:provider.stage}
+
+  uploadBucketName: '${ssm:/our-wedding/${self:provider.stage}/apps/gallery/upload-s3-bucket-name}'
+  photoBucketName: '${ssm:/our-wedding/${self:provider.stage}/apps/gallery/photo-s3-bucket-name}'
+  photoBucketPrefix: '${ssm:/our-wedding/${self:provider.stage}/apps/gallery/photo-s3-bucket-prefix}'
+  photoBucketPublicReadUrl: 'https://${ssm:/our-wedding/${self:provider.stage}/apps/gallery/host}{path}'
+  photoTableName: '${ssm:/our-wedding/${self:provider.stage}/apps/gallery/table-name}'
+  host: 'https://${ssm:/our-wedding/${self:provider.stage}/apps/gallery/host}/api'

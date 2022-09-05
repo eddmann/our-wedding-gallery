@@ -1,0 +1,62 @@
+service: our-wedding-gallery-api
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  region: ${opt:region}
+  stage: ${opt:stage}
+  runtime: nodejs14.x
+  memorySize: 256
+  timeout: 28
+  tags: ${self:custom.tags}
+  stackTags: ${self:custom.tags}
+  httpApi:
+    cors: true
+  iam: ${file(./serverless.${opt:stage}.yml):iam, ''}
+
+plugins: ${file(./serverless.${opt:stage}.yml):plugins, ''}
+
+custom: ${file(./serverless.${opt:stage}.yml):custom, ''}
+
+functions:
+  list-photos:
+    handler: handler/list-photos.handler
+    environment:
+      PHOTO_TABLE_NAME: ${self:custom.photoTableName}
+      PHOTO_BUCKET_PUBLIC_READ_URL: ${self:custom.photoBucketPublicReadUrl}
+      DYNAMODB_ENDPOINT: ${self:custom.dynamoDBEndpoint, ''}
+      HOST: ${self:custom.host}
+    events:
+      - httpApi:
+          path: /api
+          method: get
+
+  request-photo-upload:
+    handler: handler/request-photo-upload.handler
+    environment:
+      UPLOAD_BUCKET_NAME: ${self:custom.uploadBucketName}
+      S3_ENDPOINT: ${self:custom.s3Endpoint, ''}
+      HOST: ${self:custom.host}
+    events:
+      - httpApi:
+          path: /api/request
+          method: post
+
+  process-photo:
+    handler: handler/process-photo.handler
+    memorySize: 1024
+    timeout: 120
+    environment:
+      UPLOAD_BUCKET_NAME: ${self:custom.uploadBucketName}
+      PHOTO_BUCKET_NAME: ${self:custom.photoBucketName}
+      PHOTO_BUCKET_PREFIX: ${self:custom.photoBucketPrefix}
+      PHOTO_TABLE_NAME: ${self:custom.photoTableName}
+      DYNAMODB_ENDPOINT: ${self:custom.dynamoDBEndpoint, ''}
+      S3_ENDPOINT: ${self:custom.s3Endpoint, ''}
+    events:
+      - s3:
+          bucket: ${self:custom.uploadBucketName}
+          event: s3:ObjectCreated:*
+          existing: true
+
+resources: ${file(./serverless.${opt:stage}.yml):resources, ''}
