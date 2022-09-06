@@ -30,5 +30,14 @@ api/deploy: _require_AWS_ACCESS_KEY_ID _require_AWS_SECRET_ACCESS_KEY _require_S
 	&& yarn \
 	&& ./node_modules/.bin/serverless deploy --stage ${STAGE} --region eu-west-1 --verbose --conceal
 
+#
+# Client
+#
+
+.PHONY: client/dev/start
+client/dev/start:
+	@cd client \
+	&& PORT=4000 REACT_APP_API_BOOTSTRAP_URL=http://localhost:3000/api yarn start
+
 _require_%:
 	@_=$(or $($*),$(error "`$*` env var required"))
