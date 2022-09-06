@@ -15,8 +15,8 @@ api/dev/start: api/dev/s3 api/dev/dynamodb
 .PHONY: api/dev/dynamodb
 api/dev/dynamodb:
 	@cd api \
-	&& docker stop ${API_DEV_DYNAMODB_CONTAINER_NAME} \
-	&& docker rm ${API_DEV_DYNAMODB_CONTAINER_NAME} \
+	&& docker stop ${API_DEV_DYNAMODB_CONTAINER_NAME} || true \
+	&& docker rm ${API_DEV_DYNAMODB_CONTAINER_NAME} || true \
 	&& docker run -d -p 8123:8000 --name ${API_DEV_DYNAMODB_CONTAINER_NAME} docker.io/amazon/dynamodb-local:1.18.0 -jar DynamoDBLocal.jar -inMemory -sharedDb \
 	&& ${API_DEV_ENV_VARS} ./node_modules/.bin/serverless dynamodb migrate --region eu-west-1 --stage dev
 
