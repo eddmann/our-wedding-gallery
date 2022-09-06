@@ -36,7 +36,7 @@ module.exports.handler = async event => {
       {
         _links: {
           self: { href: process.env.HOST },
-          ...(nextPointer ? { next: { href: `${process.env.HOST}/?next=${nextPointer}` } } : {}),
+          ...(nextPointer ? { next: { href: `${process.env.HOST}?next=${nextPointer}` } } : {}),
           request: { href: `${process.env.HOST}/request` },
         },
         photos: records.Items.map(record => ({

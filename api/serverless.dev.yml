@@ -24,7 +24,7 @@ custom:
   photoBucketPrefix: 'photo'
   photoBucketPublicReadUrl: 'http://localhost:4569/photo-bucket{path}'
   photoTableName: 'photo-table'
-  host: 'http://localhost:3000'
+  host: 'http://localhost:3000/api'
   dynamoDBEndpoint: 'http://localhost:8123'
   s3Endpoint: 'http://localhost:4569'
 
