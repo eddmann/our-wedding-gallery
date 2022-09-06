@@ -26,7 +26,7 @@ api/dev/s3:
 
 .PHONY: api/deploy
 api/deploy: _require_AWS_ACCESS_KEY_ID _require_AWS_SECRET_ACCESS_KEY _require_STAGE
-	cd api \
+	@cd api \
 	&& yarn \
 	&& ./node_modules/.bin/serverless deploy --stage ${STAGE} --region eu-west-1 --verbose --conceal
 
@@ -38,6 +38,24 @@ api/deploy: _require_AWS_ACCESS_KEY_ID _require_AWS_SECRET_ACCESS_KEY _require_S
 client/dev/start:
 	@cd client \
 	&& PORT=4000 REACT_APP_API_BOOTSTRAP_URL=http://localhost:3000/api yarn start
+
+.PHONY: client/deploy
+client/deploy: _require_AWS_ACCESS_KEY_ID _require_AWS_SECRET_ACCESS_KEY _require_STAGE
+	@HOST=$$(docker run --rm \
+	  -e AWS_ACCESS_KEY_ID \
+	  -e AWS_SECRET_ACCESS_KEY \
+	  docker.io/amazon/aws-cli:2.4.6 ssm get-parameter --region=eu-west-1 --name /our-wedding/${STAGE}/apps/gallery/host --query Parameter.Value --output text) \
+	&& cd client \
+	&& yarn \
+	&& REACT_APP_API_BOOTSTRAP_URL=https://$${HOST}/api yarn build \
+	&& docker run --rm \
+	  -v $(PWD)/client/build:/build \
+	  -e AWS_ACCESS_KEY_ID \
+	  -e AWS_SECRET_ACCESS_KEY \
+	  --entrypoint= \
+	  docker.io/amazon/aws-cli:2.4.6 \
+	    bash -c "CLIENT_S3_BUCKET_NAME=\$$(aws ssm get-parameter --region=eu-west-1 --name /our-wedding/${STAGE}/apps/gallery/client-s3-bucket-name --query Parameter.Value --output text); \
+	             aws s3 sync --region=eu-west-1 /build "s3://\$${CLIENT_S3_BUCKET_NAME}" --quiet --delete --sse AES256"
 
 _require_%:
 	@_=$(or $($*),$(error "`$*` env var required"))

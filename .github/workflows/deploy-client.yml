@@ -1,14 +1,14 @@
-name: Deploy API
+name: Deploy Client
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'api/**'
+      - 'client/**'
       - Makefile
 
-concurrency: deploy-api
+concurrency: deploy-client
 
 jobs:
   deploy-staging:
@@ -23,9 +23,9 @@ jobs:
       - name: Restore Yarn cache
         uses: actions/cache@v2
         with:
-          path: ./api/node_modules
-          key: api-yarn-${{ hashFiles('./api/yarn.lock') }}
-          restore-keys: api-yarn-
+          path: ./client/node_modules
+          key: client-yarn-${{ hashFiles('./client/yarn.lock') }}
+          restore-keys: client-yarn-
       - name: Retrieve AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -33,4 +33,4 @@ jobs:
           aws-access-key-id: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
       - name: Deploy
-        run: make api/deploy STAGE=staging
+        run: make client/deploy STAGE=staging
