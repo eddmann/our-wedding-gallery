@@ -7,6 +7,10 @@ SHELL := /bin/bash
 API_DEV_DYNAMODB_CONTAINER_NAME := our-wedding-gallery-dynamodb
 API_DEV_ENV_VARS := AWS_ACCESS_KEY_ID=S3RVER AWS_SECRET_ACCESS_KEY=S3RVER
 
+.PHONY: api/install
+api/install:
+	@yarn --cwd api
+
 .PHONY: api/dev/start
 api/dev/start: api/dev/s3 api/dev/dynamodb
 	@cd api \
@@ -33,6 +37,10 @@ api/deploy: _require_AWS_ACCESS_KEY_ID _require_AWS_SECRET_ACCESS_KEY _require_S
 #
 # Client
 #
+
+.PHONY: client/install
+client/install:
+	@yarn --cwd client
 
 .PHONY: client/dev/start
 client/dev/start:
