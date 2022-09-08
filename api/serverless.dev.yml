@@ -27,6 +27,7 @@ custom:
   host: 'http://localhost:3000/api'
   dynamoDBEndpoint: 'http://localhost:8123'
   s3Endpoint: 'http://localhost:4569'
+  maxPhotosPerRequest: 10
 
 resources:
   Resources:

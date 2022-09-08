@@ -10,7 +10,7 @@ function App({ bootstrapUrl }) {
   useEffect(() => {
     fetch(bootstrapUrl)
       .then(response => response.json())
-      .then(({ _links }) => setBootstrap(_links));
+      .then(bootstrap => setBootstrap(bootstrap));
   }, [bootstrapUrl]);
 
   if (!bootstrap) {
@@ -23,16 +23,17 @@ function App({ bootstrapUrl }) {
         <img src={logo} alt="" />
       </div>
       <div className="mt-10 mb-10 flex justify-center">
-        {bootstrap.request && (
+        {bootstrap?._links?.request && (
           <PhotoUpload
-            url={bootstrap.request.href}
+            url={bootstrap._links.request.href}
+            maxPhotosPerRequest={bootstrap.maxPhotosPerRequest}
             onUpload={() => {
               window.location.reload();
             }}
           />
         )}
       </div>
-      <PhotoGallery initialUrl={bootstrap.self.href} />
+      {bootstrap?._links?.list && <PhotoGallery initialUrl={bootstrap._links.list.href} />}
     </>
   );
 }

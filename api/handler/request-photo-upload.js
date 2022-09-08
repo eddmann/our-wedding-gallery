@@ -9,10 +9,14 @@ module.exports.handler = async event => {
     endpoint: process.env.S3_ENDPOINT || undefined,
   });
 
-  if (photos.length < 1 && photos.length > 10) {
+  if (photos.length < 1 && photos.length > process.env.MAX_PHOTOS_PER_REQUEST) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: 'Expected between 1 and 10 photos' }, null, 2),
+      body: JSON.stringify(
+        { error: `Expected between 1 and ${process.env.MAX_PHOTOS_PER_REQUEST} photos` },
+        null,
+        2
+      ),
     };
   }
 
@@ -35,7 +39,8 @@ module.exports.handler = async event => {
       {
         _links: {
           self: { href: `${process.env.HOST}/request` },
-          list: { href: process.env.HOST },
+          list: { href: `${process.env.HOST}/list` },
+          bootstrap: { href: process.env.HOST },
         },
         urls,
       },

@@ -19,6 +19,16 @@ plugins: ${file(./serverless.${opt:stage}.yml):plugins, ''}
 custom: ${file(./serverless.${opt:stage}.yml):custom, ''}
 
 functions:
+  bootstrap:
+    handler: handler/bootstrap.handler
+    environment:
+      HOST: ${self:custom.host}
+      MAX_PHOTOS_PER_REQUEST: ${self:custom.maxPhotosPerRequest}
+    events:
+      - httpApi:
+          path: /api
+          method: get
+
   list-photos:
     handler: handler/list-photos.handler
     environment:
@@ -29,7 +39,7 @@ functions:
       PHOTOS_PER_BATCH: 6
     events:
       - httpApi:
-          path: /api
+          path: /api/list
           method: get
 
   request-photo-upload:
@@ -38,6 +48,7 @@ functions:
       UPLOAD_BUCKET_NAME: ${self:custom.uploadBucketName}
       S3_ENDPOINT: ${self:custom.s3Endpoint, ''}
       HOST: ${self:custom.host}
+      MAX_PHOTOS_PER_REQUEST: ${self:custom.maxPhotosPerRequest}
     events:
       - httpApi:
           path: /api/request

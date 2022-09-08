@@ -15,3 +15,4 @@ custom:
   photoBucketPublicReadUrl: 'https://${ssm:/our-wedding/${self:provider.stage}/apps/gallery/host}{path}'
   photoTableName: '${ssm:/our-wedding/${self:provider.stage}/apps/gallery/table-name}'
   host: 'https://${ssm:/our-wedding/${self:provider.stage}/apps/gallery/host}/api'
+  maxPhotosPerRequest: 10

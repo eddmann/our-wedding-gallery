@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 
-const MAX_UPLOAD_LIMIT = 10;
-
 const PendingUpload = () => (
   <svg
     className="my-1 mr-4 w-5 h-5 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600 inline"
@@ -41,7 +39,7 @@ const calcUploadProgress = uploads => {
   return (processed / uploads.length) * 100;
 };
 
-function PhotoUpload({ url, onUpload }) {
+function PhotoUpload({ url, maxPhotosPerRequest, onUpload }) {
   const [isOpen, setOpen] = useState(false);
   const [uploads, setUploads] = useState([]);
 
@@ -57,7 +55,7 @@ function PhotoUpload({ url, onUpload }) {
 
   const handleUpload = async e => {
     const newUploads = [...e.target.files]
-      .slice(0, MAX_UPLOAD_LIMIT)
+      .slice(0, maxPhotosPerRequest)
       .map(({ name }) => ({ name, status: 'pending' }));
 
     if (newUploads.length === 0) {

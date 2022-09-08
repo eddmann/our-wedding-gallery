@@ -16,7 +16,7 @@ function PhotoGallery({ initialUrl }) {
     const response = await fetch(nextUrl).then(response => response.json());
 
     setPhotos(photos => [...photos, ...response.photos]);
-    setNextUrl(response._links.next ? response._links.next.href.replace('api/', 'api') : undefined);
+    setNextUrl(response?._links?.next?.href);
   }, [nextUrl]);
 
   return (
