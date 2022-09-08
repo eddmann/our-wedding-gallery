@@ -162,7 +162,7 @@ function PhotoUpload({ url, maxPhotosPerRequest, onUpload }) {
                 <input
                   type="file"
                   onChange={handleUpload}
-                  accept=".jpg, .jpeg, image/jpg, image/jpeg"
+                  accept=".jpg, .jpeg, .heic, image/jpg, image/jpeg, image/heic"
                   multiple
                 />
               )}
