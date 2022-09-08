@@ -26,6 +26,7 @@ functions:
       PHOTO_BUCKET_PUBLIC_READ_URL: ${self:custom.photoBucketPublicReadUrl}
       DYNAMODB_ENDPOINT: ${self:custom.dynamoDBEndpoint, ''}
       HOST: ${self:custom.host}
+      PHOTOS_PER_BATCH: 6
     events:
       - httpApi:
           path: /api

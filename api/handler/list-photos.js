@@ -21,7 +21,7 @@ module.exports.handler = async event => {
       ':sk': next || `${new Date().getTime()}`,
     },
     ScanIndexForward: false,
-    Limit: 2,
+    Limit: process.env.PHOTOS_PER_BATCH,
   };
 
   const records = await client.query(params).promise();
