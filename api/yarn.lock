@@ -5045,11 +5045,6 @@ serverless-dynamodb-local@^0.2.40:
     dynamodb-localhost "0.0.9"
     lodash "^4.17.0"
 
-serverless-offline-ssm@^6.2.0:
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/serverless-offline-ssm/-/serverless-offline-ssm-6.2.0.tgz#f2db290a72631629579ce5f940ed76f254f96653"
-  integrity sha512-Af7JeLbU4OHAx7ZgAs2OLP2DGKyp/g45rX7SWQ8KiBzn47jme+MqN+GOV6qd5oZ8V9khd3p62+RueHR3ezEZZQ==
-
 serverless-offline@^8.0.0:
   version "8.8.1"
   resolved "https://registry.yarnpkg.com/serverless-offline/-/serverless-offline-8.8.1.tgz#439a7227d5e6d80062c624772c0c2eafbbe9da3a"
