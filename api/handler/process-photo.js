@@ -1,8 +1,22 @@
 'use strict';
 
-const AWS = require('aws-sdk');
+const { DynamoDBClient, PutItemCommand } = require('@aws-sdk/client-dynamodb');
+const {
+  S3Client,
+  GetObjectCommand,
+  DeleteObjectCommand,
+  PutObjectCommand,
+} = require('@aws-sdk/client-s3');
 const sharp = require('sharp');
 const path = require('path');
+
+const readStream = stream =>
+  new Promise((resolve, reject) => {
+    const chunks = [];
+    stream.on('data', chunk => chunks.push(chunk));
+    stream.once('error', reject);
+    stream.once('end', () => resolve(Buffer.concat(chunks)));
+  });
 
 const getCurrentDate = () => {
   const date = new Date();
@@ -16,21 +30,21 @@ const getCurrentDate = () => {
 };
 
 module.exports.handler = async event => {
-  const s3 = new AWS.S3({
-    s3ForcePathStyle: process.env.IS_OFFLINE,
+  const s3 = new S3Client({
+    forcePathStyle: process.env.IS_OFFLINE,
     endpoint: process.env.S3_ENDPOINT || undefined,
   });
 
   const { key } = event.Records[0].s3.object;
 
-  const object = await s3
-    .getObject({
+  const object = await s3.send(
+    new GetObjectCommand({
       Bucket: event.Records[0].s3.bucket.name,
       Key: key,
     })
-    .promise();
+  );
 
-  const photo = sharp(object.Body);
+  const photo = sharp(await readStream(object.Body));
   const metadata = await photo.metadata();
 
   const { name } = path.parse(key);
@@ -46,13 +60,13 @@ module.exports.handler = async event => {
       .webp()
       .toBuffer()
       .then(output =>
-        s3
-          .putObject({
+        s3.send(
+          new PutObjectCommand({
             Key: thumbnailKey,
             Bucket: process.env.PHOTO_BUCKET_NAME,
             Body: output,
           })
-          .promise()
+        )
       ),
 
     photo
@@ -60,49 +74,49 @@ module.exports.handler = async event => {
       .webp()
       .toBuffer()
       .then(output =>
-        s3
-          .putObject({
+        s3.send(
+          new PutObjectCommand({
             Key: webKey,
             Bucket: process.env.PHOTO_BUCKET_NAME,
             Body: output,
           })
-          .promise()
+        )
       ),
 
-    s3
-      .putObject({
+    s3.send(
+      new PutObjectCommand({
         Key: originalKey,
         Bucket: process.env.PHOTO_BUCKET_NAME,
         Body: object.Body,
       })
-      .promise(),
+    ),
   ]);
 
-  const client = new AWS.DynamoDB.DocumentClient({
+  const db = new DynamoDBClient({
     endpoint: process.env.DYNAMODB_ENDPOINT || undefined,
   });
 
   const processedAt = `${new Date().getTime()}`;
 
-  await client
-    .put({
+  await db.send(
+    new PutItemCommand({
       TableName: process.env.PHOTO_TABLE_NAME,
       Item: {
-        PK: `image#${name}`,
-        SK: processedAt,
-        GSI1PK: 'list',
-        GSI1SK: processedAt,
-        thumbnail: `s3://${process.env.PHOTO_BUCKET_NAME}/${thumbnailKey}`,
-        web: `s3://${process.env.PHOTO_BUCKET_NAME}/${webKey}`,
-        original: `s3://${process.env.PHOTO_BUCKET_NAME}/${originalKey}`,
+        PK: { S: `image#${name}` },
+        SK: { S: processedAt },
+        GSI1PK: { S: 'list' },
+        GSI1SK: { S: processedAt },
+        thumbnail: { S: `s3://${process.env.PHOTO_BUCKET_NAME}/${thumbnailKey}` },
+        web: { S: `s3://${process.env.PHOTO_BUCKET_NAME}/${webKey}` },
+        original: { S: `s3://${process.env.PHOTO_BUCKET_NAME}/${originalKey}` },
       },
     })
-    .promise();
+  );
 
-  await s3
-    .deleteObject({
+  await s3.send(
+    new DeleteObjectCommand({
       Bucket: event.Records[0].s3.bucket.name,
       Key: key,
     })
-    .promise();
+  );
 };
