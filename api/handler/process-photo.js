@@ -44,7 +44,8 @@ module.exports.handler = async event => {
     })
   );
 
-  const photo = sharp(await readStream(object.Body));
+  const body = await readStream(object.Body);
+  const photo = sharp(body);
   const metadata = await photo.metadata();
 
   const { name } = path.parse(key);
@@ -87,7 +88,7 @@ module.exports.handler = async event => {
       new PutObjectCommand({
         Key: originalKey,
         Bucket: process.env.PHOTO_BUCKET_NAME,
-        Body: object.Body,
+        Body: body,
       })
     ),
   ]);
