@@ -26,7 +26,7 @@ api/dev/dynamodb:
 
 .PHONY: api/dev/s3
 api/dev/s3:
-	@rm -fr api/dev/s3 && mkdir -p api/dev/s3
+	@rm -fr api/s3 && mkdir -p api/s3
 
 .PHONY: api/deploy
 api/deploy: _require_AWS_ACCESS_KEY_ID _require_AWS_SECRET_ACCESS_KEY _require_STAGE

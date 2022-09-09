@@ -11,8 +11,8 @@ custom:
       port: 8123
 
   s3:
-    directory: dev/s3
-    cors: dev/s3-cors.xml
+    directory: s3
+    cors: s3-cors-dev.xml
 
   tags:
     Service: OurWedding
