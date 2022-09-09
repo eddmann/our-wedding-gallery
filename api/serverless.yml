@@ -12,11 +12,11 @@ provider:
   stackTags: ${self:custom.tags}
   httpApi:
     cors: true
-  iam: ${file(./serverless.${opt:stage}.yml):iam, ''}
+  iam: ${file(./serverless.${opt:stage}.yml):iam, null}
 
-plugins: ${file(./serverless.${opt:stage}.yml):plugins, ''}
+plugins: ${file(./serverless.${opt:stage}.yml):plugins, null}
 
-custom: ${file(./serverless.${opt:stage}.yml):custom, ''}
+custom: ${file(./serverless.${opt:stage}.yml):custom, null}
 
 functions:
   bootstrap:
@@ -34,7 +34,7 @@ functions:
     environment:
       PHOTO_TABLE_NAME: ${self:custom.photoTableName}
       PHOTO_BUCKET_PUBLIC_READ_URL: ${self:custom.photoBucketPublicReadUrl}
-      DYNAMODB_ENDPOINT: ${self:custom.dynamoDBEndpoint, ''}
+      DYNAMODB_ENDPOINT: ${self:custom.dynamoDBEndpoint, null}
       HOST: ${self:custom.host}
       PHOTOS_PER_BATCH: 6
     events:
@@ -46,7 +46,7 @@ functions:
     handler: handler/request-photo-upload.handler
     environment:
       UPLOAD_BUCKET_NAME: ${self:custom.uploadBucketName}
-      S3_ENDPOINT: ${self:custom.s3Endpoint, ''}
+      S3_ENDPOINT: ${self:custom.s3Endpoint, null}
       HOST: ${self:custom.host}
       MAX_PHOTOS_PER_REQUEST: ${self:custom.maxPhotosPerRequest}
     events:
@@ -63,8 +63,8 @@ functions:
       PHOTO_BUCKET_NAME: ${self:custom.photoBucketName}
       PHOTO_BUCKET_PREFIX: ${self:custom.photoBucketPrefix}
       PHOTO_TABLE_NAME: ${self:custom.photoTableName}
-      DYNAMODB_ENDPOINT: ${self:custom.dynamoDBEndpoint, ''}
-      S3_ENDPOINT: ${self:custom.s3Endpoint, ''}
+      DYNAMODB_ENDPOINT: ${self:custom.dynamoDBEndpoint, null}
+      S3_ENDPOINT: ${self:custom.s3Endpoint, null}
     layers:
       - arn:aws:lambda:eu-west-1:428533468732:layer:sharp-heic:1
     events:
@@ -73,4 +73,4 @@ functions:
           event: s3:ObjectCreated:*
           existing: true
 
-resources: ${file(./serverless.${opt:stage}.yml):resources, ''}
+resources: ${file(./serverless.${opt:stage}.yml):resources, null}
