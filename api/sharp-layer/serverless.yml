@@ -1,0 +1,17 @@
+service: sharp-layer
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  region: eu-west-1
+  stage: prod
+
+layers:
+  sharp-0_30_7-node-16:
+    path: build
+    compatibleRuntimes:
+      - nodejs16.x
+    compatibleArchitectures:
+      - x86_64
+    allowedAccounts:
+      - '*'
