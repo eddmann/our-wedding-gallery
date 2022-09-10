@@ -25,7 +25,7 @@ module.exports.handler = async event => {
   };
 
   const records = await client.send(new QueryCommand(params));
-  const nextPointer = records.LastEvaluatedKey?.GSI1SK;
+  const nextPointer = records.LastEvaluatedKey?.GSI1SK?.S;
 
   return {
     statusCode: 200,
