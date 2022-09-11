@@ -82,7 +82,7 @@ function PhotoUpload({ url, maxPhotosPerRequest, onUpload }) {
 
       setUploads(uploads => {
         const newUploads = [...uploads];
-        newUploads[i].status = 'uploading';
+        newUploads[i] = { ...newUploads[i], status: 'uploading' };
         return newUploads;
       });
 
@@ -92,7 +92,7 @@ function PhotoUpload({ url, maxPhotosPerRequest, onUpload }) {
       }).then(response => {
         setUploads(uploads => {
           const newUploads = [...uploads];
-          newUploads[i].status = response.ok ? 'uploaded' : 'failed';
+          newUploads[i] = { ...newUploads[i], status: response.ok ? 'uploaded' : 'failed' };
           return newUploads;
         });
       });
