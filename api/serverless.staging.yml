@@ -3,7 +3,14 @@ iam:
     managedPolicies:
       - ${ssm:/our-wedding/${self:provider.stage}/apps/gallery/policy-arn}
 
+plugins:
+  - serverless-esbuild
+
 custom:
+  esbuild:
+    external:
+      - sharp
+
   tags:
     Service: OurWedding
     Application: Gallery

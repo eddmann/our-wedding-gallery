@@ -1,9 +1,14 @@
 plugins:
+  - serverless-esbuild
   - serverless-dynamodb-local
   - serverless-s3-local
   - serverless-offline
 
 custom:
+  esbuild:
+    external:
+      - sharp
+
   dynamodb:
     stages:
       - dev

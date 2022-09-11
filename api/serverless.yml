@@ -18,6 +18,9 @@ plugins: ${file(./serverless.${opt:stage}.yml):plugins, null}
 
 custom: ${file(./serverless.${opt:stage}.yml):custom, null}
 
+package:
+  individually: true
+
 functions:
   bootstrap:
     handler: handler/bootstrap.handler
