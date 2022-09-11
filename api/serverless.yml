@@ -65,8 +65,6 @@ functions:
       PHOTO_TABLE_NAME: ${self:custom.photoTableName}
       DYNAMODB_ENDPOINT: ${self:custom.dynamoDBEndpoint, null}
       S3_ENDPOINT: ${self:custom.s3Endpoint, null}
-    layers:
-      - arn:aws:lambda:eu-west-1:428533468732:layer:sharp-0_30_7-node-16:1
     events:
       - s3:
           bucket: ${self:custom.uploadBucketName}
