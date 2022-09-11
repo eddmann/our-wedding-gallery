@@ -57,6 +57,7 @@ module.exports.handler = async event => {
 
   await Promise.all([
     photo
+      .rotate()
       .resize(Math.min(400, metadata.width))
       .webp()
       .toBuffer()
@@ -71,6 +72,7 @@ module.exports.handler = async event => {
       ),
 
     photo
+      .rotate()
       .resize(Math.min(1080, metadata.width))
       .webp()
       .toBuffer()
