@@ -7,6 +7,7 @@ on:
     paths:
       - 'client/**'
       - Makefile
+      - .github/workflows/deploy-client.yml
 
 concurrency: deploy-client
 
