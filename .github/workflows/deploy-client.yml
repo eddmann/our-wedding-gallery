@@ -34,3 +34,28 @@ jobs:
           aws-secret-access-key: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
       - name: Deploy
         run: make client/deploy STAGE=staging
+
+  deploy-prod:
+    needs: deploy-staging
+    name: Deploy production
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Restore Yarn cache
+        uses: actions/cache@v2
+        with:
+          path: ./client/node_modules
+          key: client-yarn-${{ hashFiles('./client/yarn.lock') }}
+          restore-keys: client-yarn-
+      - name: Retrieve AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: eu-west-1
+          aws-access-key-id: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
+      - name: Deploy
+        run: make client/deploy STAGE=prod
