@@ -36,13 +36,15 @@ module.exports.handler = async event => {
       {
         _links: {
           self: {
-            href: next ? `${process.env.HOST}/list?next=${next}` : `${process.env.HOST}/list`,
+            href: next
+              ? `${process.env.HOST}/api/list?next=${next}`
+              : `${process.env.HOST}/api/list`,
           },
           ...(nextPointer
-            ? { next: { href: `${process.env.HOST}/list?next=${nextPointer}` } }
+            ? { next: { href: `${process.env.HOST}/api/list?next=${nextPointer}` } }
             : {}),
-          request: { href: `${process.env.HOST}/request` },
-          bootstrap: { href: process.env.HOST },
+          request: { href: `${process.env.HOST}/api/request` },
+          bootstrap: { href: `${process.env.HOST}/api` },
         },
         photos: records.Items.map(record => ({
           id: record.PK.S,

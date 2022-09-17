@@ -21,5 +21,5 @@ custom:
   photoBucketPrefix: '${ssm:/our-wedding/${self:provider.stage}/apps/gallery/photo-s3-bucket-prefix}'
   photoBucketPublicReadUrl: 'https://${ssm:/our-wedding/${self:provider.stage}/apps/gallery/host}{path}'
   photoTableName: '${ssm:/our-wedding/${self:provider.stage}/apps/gallery/table-name}'
-  host: 'https://${ssm:/our-wedding/${self:provider.stage}/apps/gallery/host}/api'
+  host: 'https://${ssm:/our-wedding/${self:provider.stage}/apps/gallery/host}'
   maxPhotosPerRequest: 10

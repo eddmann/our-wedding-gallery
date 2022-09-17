@@ -39,9 +39,9 @@ module.exports.handler = async event => {
     body: JSON.stringify(
       {
         _links: {
-          self: { href: `${process.env.HOST}/request` },
-          list: { href: `${process.env.HOST}/list` },
-          bootstrap: { href: process.env.HOST },
+          self: { href: `${process.env.HOST}/api/request` },
+          list: { href: `${process.env.HOST}/api/list` },
+          bootstrap: { href: `${process.env.HOST}/api` },
         },
         urls,
       },

@@ -59,7 +59,7 @@ functions:
 
   process-photo:
     handler: handler/process-photo.handler
-    memorySize: 1024
+    memorySize: 3008
     timeout: 120
     environment:
       UPLOAD_BUCKET_NAME: ${self:custom.uploadBucketName}
