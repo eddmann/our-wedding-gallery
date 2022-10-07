@@ -15,7 +15,7 @@ function PhotoGallery({ initialUrl }) {
   const doFetch = useCallback(async () => {
     const response = await fetch(nextUrl).then(response => response.json());
 
-    setPhotos(photos => [...photos, ...response.photos]);
+    setPhotos(photos => [...photos, ...response.photos].map((photo, idx) => ({ idx, ...photo })));
     setNextUrl(response?._links?.next?.href);
   }, [nextUrl]);
 
@@ -34,7 +34,11 @@ function PhotoGallery({ initialUrl }) {
           ))}
         </div>
       </InfiniteScroll>
-      <Lightbox photo={selected} onClose={() => setSelected(undefined)} />
+      <Lightbox
+        photo={selected}
+        onNext={() => setSelected(photos[selected.idx + 1 >= photos.length ? 0 : selected.idx + 1])}
+        onClose={() => setSelected(undefined)}
+      />
     </>
   );
 }

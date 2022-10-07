@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-function Lightbox({ photo, onClose }) {
+function Lightbox({ photo, onNext, onClose }) {
   useEffect(() => {
     if (!photo) return;
 
@@ -32,6 +32,7 @@ function Lightbox({ photo, onClose }) {
         src={photo.web}
         onClick={e => {
           e.stopPropagation();
+          onNext();
         }}
       />
     </div>
