@@ -51,6 +51,7 @@ function PhotoGallery({ initialUrl }) {
 
           doFetch().then(hasMorePhotos => setSelected(hasMorePhotos ? selected + 1 : 0));
         }}
+        onPrevious={() => setSelected(Math.max(0, selected - 1))}
         onClose={() => setSelected(undefined)}
       />
     </>

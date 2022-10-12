@@ -1,6 +1,39 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-function Lightbox({ photo, onNext, onClose }) {
+function Photo({ src, onClick, onSwipeLeft, onSwipeRight, minSwipeDistance = 150 }) {
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+
+  const handleTouchStart = useCallback(e => {
+    setTouchStart(e.targetTouches[0].clientX);
+  }, []);
+
+  const handleTouchMove = useCallback(e => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  }, []);
+
+  const handleTouchEnd = useCallback(
+    e => {
+      if (touchStart - touchEnd > minSwipeDistance) onSwipeLeft();
+      if (touchStart - touchEnd < -minSwipeDistance) onSwipeRight();
+    },
+    [touchStart, touchEnd, minSwipeDistance, onSwipeLeft, onSwipeRight]
+  );
+
+  return (
+    <img
+      alt=""
+      className="max-h-[90vh]"
+      src={src}
+      onClick={onClick}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    />
+  );
+}
+
+function Lightbox({ photo, onNext, onPrevious, onClose }) {
   useEffect(() => {
     if (!photo) return;
 
@@ -26,14 +59,14 @@ function Lightbox({ photo, onNext, onClose }) {
       >
         &times;
       </button>
-      <img
-        alt=""
-        className="max-h-[90vh]"
+      <Photo
         src={photo.web}
         onClick={e => {
           e.stopPropagation();
           onNext();
         }}
+        onSwipeLeft={onNext}
+        onSwipeRight={onPrevious}
       />
     </div>
   );
