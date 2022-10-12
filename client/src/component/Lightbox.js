@@ -12,13 +12,12 @@ function Photo({ src, onClick, onSwipeLeft, onSwipeRight, minSwipeDistance = 150
     setTouchEnd(e.targetTouches[0].clientX);
   }, []);
 
-  const handleTouchEnd = useCallback(
-    e => {
-      if (touchStart - touchEnd > minSwipeDistance) onSwipeLeft();
-      if (touchStart - touchEnd < -minSwipeDistance) onSwipeRight();
-    },
-    [touchStart, touchEnd, minSwipeDistance, onSwipeLeft, onSwipeRight]
-  );
+  const handleTouchEnd = useCallback(() => {
+    if (touchStart - touchEnd > minSwipeDistance) onSwipeLeft();
+    if (touchStart - touchEnd < -minSwipeDistance) onSwipeRight();
+    setTouchStart(0);
+    setTouchEnd(0);
+  }, [touchStart, touchEnd, minSwipeDistance, onSwipeLeft, onSwipeRight]);
 
   return (
     <img
