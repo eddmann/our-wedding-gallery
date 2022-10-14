@@ -25,7 +25,7 @@ function Photo({ src, onClick, onSwipeLeft, onSwipeRight, minSwipeDistance = 150
       alt=""
       className="max-h-[90vh]"
       src={src}
-      style={{ marginLeft: touchEnd != 0 ? touchEnd - touchStart : 0 }}
+      style={{ marginLeft: touchEnd !== 0 ? touchEnd - touchStart : 0 }}
       onClick={onClick}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
