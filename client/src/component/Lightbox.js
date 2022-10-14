@@ -13,6 +13,7 @@ function Photo({ src, onClick, onSwipeLeft, onSwipeRight, minSwipeDistance = 150
   }, []);
 
   const handleTouchEnd = useCallback(() => {
+    if (touchEnd === 0) return;
     if (touchStart - touchEnd > minSwipeDistance) onSwipeLeft();
     if (touchStart - touchEnd < -minSwipeDistance) onSwipeRight();
     setTouchStart(0);
@@ -24,6 +25,7 @@ function Photo({ src, onClick, onSwipeLeft, onSwipeRight, minSwipeDistance = 150
       alt=""
       className="max-h-[90vh]"
       src={src}
+      style={{ marginLeft: touchEnd != 0 ? touchEnd - touchStart : 0 }}
       onClick={onClick}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
