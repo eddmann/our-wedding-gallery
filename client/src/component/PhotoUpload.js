@@ -42,6 +42,7 @@ const calcUploadProgress = uploads => {
 function PhotoUpload({ url, maxPhotosPerRequest, onUpload }) {
   const [isOpen, setOpen] = useState(false);
   const [uploads, setUploads] = useState([]);
+  const [error, setError] = useState();
 
   useEffect(() => {
     if (!isOpen) return;
@@ -54,11 +55,14 @@ function PhotoUpload({ url, maxPhotosPerRequest, onUpload }) {
   }, [isOpen]);
 
   const handleUpload = async e => {
-    const newUploads = [...e.target.files]
-      .slice(0, maxPhotosPerRequest)
-      .map(({ name }) => ({ name, status: 'pending' }));
+    const newUploads = [...e.target.files].map(({ name }) => ({ name, status: 'pending' }));
 
     if (newUploads.length === 0) {
+      return;
+    }
+
+    if (newUploads.length > maxPhotosPerRequest) {
+      setError(`Sorry, you can only upload ${maxPhotosPerRequest} photos at a time.`);
       return;
     }
 
@@ -115,7 +119,7 @@ function PhotoUpload({ url, maxPhotosPerRequest, onUpload }) {
       </button>
       {isOpen && (
         <div className="fixed top-0 left-0 z-80 w-screen h-screen flex justify-center items-center bg-black/70 p-2 md:p-0">
-          <div className="relative bg-white rounded-lg z-90 w-full h-full max-w-md md:h-auto">
+          <div className="relative bg-white rounded-lg z-90 w-full h-full max-w-md md:h-auto overflow-auto">
             <button
               type="button"
               className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
@@ -139,6 +143,11 @@ function PhotoUpload({ url, maxPhotosPerRequest, onUpload }) {
               </svg>
             </button>
             <div className="py-6 px-6">
+              {error && (
+                <div class="mt-8 bg-red-100 rounded-lg py-2 px-5 text-base text-red-700 mb-3">
+                  {error}
+                </div>
+              )}
               {uploads.length > 0 ? (
                 <div className="mt-8">
                   <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
